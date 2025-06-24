@@ -47,7 +47,7 @@ jobs:
           docker rm frontend-nextjs || true
 
       - name: Start new containers
-        run: docker-compose -f docker-compose.prod.yml up -d
+        run: docker compose up -d
 
       - name: Clean up old images
         run: docker image prune -af
