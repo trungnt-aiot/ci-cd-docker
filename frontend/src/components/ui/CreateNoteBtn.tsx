@@ -16,7 +16,7 @@ export default function CreateNoteBtn({ onNoteCreated }: CreateNoteBtnProps) {
         const title = titleRef.current?.value || "";
         const content = contentRef.current?.value || "";
 
-        await fetch('http://localhost:3030/api/note', {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/note`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ title, content }),

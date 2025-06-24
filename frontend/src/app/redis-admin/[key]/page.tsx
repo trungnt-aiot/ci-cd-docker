@@ -13,7 +13,7 @@ export default function RedisDetailPage() {
   useEffect(() => {
     const fetchKeyValue = async () => {
       try {
-        const res = await fetch(`http://localhost:3030/api/redis/${encodeURIComponent(key)}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/redis/${encodeURIComponent(key)}`);
         if (!res.ok) {
           throw new Error(`Error fetching data: ${res.statusText}`);
         }
@@ -50,7 +50,7 @@ export default function RedisDetailPage() {
     }
 
     try {
-      const res = await fetch(`http://localhost:3030/api/redis/${encodeURIComponent(key)}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/redis/${encodeURIComponent(key)}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ value: valueToSave }),
@@ -71,7 +71,7 @@ export default function RedisDetailPage() {
       return;
     }
     try {
-      const res = await fetch(`http://localhost:3030/api/redis/${encodeURIComponent(key)}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/redis/${encodeURIComponent(key)}`, {
         method: 'DELETE',
       });
 

@@ -15,7 +15,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: `http://localhost:3333`,
+    origin: `http://${process.env.HOST_IP}:3333`,
     methods: ["PATCH", "GET", "POST", "DELETE"],
   })
 );

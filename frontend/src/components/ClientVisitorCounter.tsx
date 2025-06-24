@@ -8,7 +8,7 @@ export default function ClientVisitorCounter() {
     const navType = navEntries[0]?.type;
 
     if (navType === 'reload' || navType === 'navigate') {
-      fetch('http://localhost:3030/api/counter', {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/counter`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

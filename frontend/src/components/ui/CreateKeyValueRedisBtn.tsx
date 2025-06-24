@@ -16,7 +16,7 @@ export default function CreateKeyValueRedisBtn({ onKeyValueCreated }: CreateKeyV
         const key = keyRef.current?.value || "";
         const value = valueRef.current?.value || "";
 
-        await fetch('http://localhost:3030/api/redis', {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/redis`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ key, value }),

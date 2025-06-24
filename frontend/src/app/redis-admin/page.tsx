@@ -12,7 +12,7 @@ export default function RedisAdminPage() {
   const [data, setData] = useState<RedisItem[]>([]);
 
   async function fetchData() {
-    fetch('http://localhost:3030/api/redis')
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/redis`)
       .then((res) => res.json())
       .then((apiData) => {
         console.log(apiData.items)

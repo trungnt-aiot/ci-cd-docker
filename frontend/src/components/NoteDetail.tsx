@@ -13,7 +13,7 @@ export default function NoteDetail({ id }: { id: string }) {
   const [content, setContent] = useState("");
 
   useEffect(() => {
-    fetch(`http://localhost:3030/api/note/${id}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/note/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setNote(data?.note[0]);
@@ -23,12 +23,12 @@ export default function NoteDetail({ id }: { id: string }) {
   }, [id]);
 
   const handleDelete = async () => {
-    await fetch(`http://localhost:3030/api/note/${id}`, { method: "DELETE" });
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/note/${id}`, { method: "DELETE" });
     // router.push("/notes");
   };
 
   const handleSave = async () => {
-    await fetch(`http://localhost:3030/api/note/${id}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/note/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title, content }),
