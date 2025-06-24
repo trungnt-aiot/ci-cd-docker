@@ -1,0 +1,49 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+build/
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+*.log.*
+debug.log
+
+# TypeScript
+*.tsbuildinfo
+
+# OS & IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Editor backups
+*~
+*.swp
+*.swo
+
+coverage/
+
+pids/
+*.pid
+*.seed
+
+docker-compose.override.yml
+
+migrations/*.js
+migrations/*.map
+
+prisma/dev.db
+prisma/*.log
+
+# Optional: if using local database for dev
+*.sqlite
+*.sqlite3
