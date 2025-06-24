@@ -59,7 +59,6 @@ jobs:
           REDIS_PORT: ${{ secrets.REDIS_PORT }}
           FRONTEND_PORT: ${{ secrets.FRONTEND_PORT }}
           HOST_IP: ${{ secrets.HOST_IP }}
-          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
         run: docker compose up -d
 
       - name: Clean up unused images
