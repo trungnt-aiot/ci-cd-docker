@@ -19,7 +19,7 @@ jobs:
         run: docker build -t trungaiot/backend-express-aiot:latest ./backend
 
       - name: Build frontend image
-        run: docker build -t trungaiot/frontend-nextjs-aiot:latest ./frontend
+        run: docker build --build-arg NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }} -t trungaiot/frontend-nextjs-aiot:latest ./frontend
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -33,11 +33,10 @@ jobs:
       - name: Push frontend image
         run: docker push trungaiot/frontend-nextjs-aiot:latest
 
-      - name: Pull backend image
-        run: docker pull trungaiot/backend-express-aiot:latest
-
-      - name: Pull frontend image
-        run: docker pull trungaiot/frontend-nextjs-aiot:latest
+      - name: Pull images
+        run: |
+          docker pull trungaiot/backend-express-aiot:latest
+          docker pull trungaiot/frontend-nextjs-aiot:latest
 
       - name: Stop and remove old containers
         run: |
@@ -47,7 +46,21 @@ jobs:
           docker rm frontend-nextjs || true
 
       - name: Start new containers
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+          MYSQL_USER: ${{ secrets.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          SQL_HOST: ${{ secrets.SQL_HOST }}
+          SQL_PORT: ${{ secrets.SQL_PORT }}
+          SQL_USER: ${{ secrets.SQL_USER }}
+          SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
+          SQL_DATABASE: ${{ secrets.SQL_DATABASE }}
+          REDIS_PORT: ${{ secrets.REDIS_PORT }}
+          FRONTEND_PORT: ${{ secrets.FRONTEND_PORT }}
+          HOST_IP: ${{ secrets.HOST_IP }}
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
         run: docker compose up -d
 
-      - name: Clean up old images
+      - name: Clean up unused images
         run: docker image prune -af
