@@ -1,0 +1,53 @@
+name: Build, Push, Pull & Deploy (Self-hosted)
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build_push_pull_run:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build backend image
+        run: docker build -t trungaiot/backend-express-aiot:latest ./backend
+
+      - name: Build frontend image
+        run: docker build -t trungaiot/frontend-nextjs-aiot:latest ./frontend
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push backend image
+        run: docker push trungaiot/backend-express-aiot:latest
+
+      - name: Push frontend image
+        run: docker push trungaiot/frontend-nextjs-aiot:latest
+
+      - name: Pull backend image
+        run: docker pull trungaiot/backend-express-aiot:latest
+
+      - name: Pull frontend image
+        run: docker pull trungaiot/frontend-nextjs-aiot:latest
+
+      - name: Stop and remove old containers
+        run: |
+          docker stop backend-express || true
+          docker stop frontend-nextjs || true
+          docker rm backend-express || true
+          docker rm frontend-nextjs || true
+
+      - name: Start new containers
+        run: docker-compose -f docker-compose.prod.yml up -d
+
+      - name: Clean up old images
+        run: docker image prune -af
