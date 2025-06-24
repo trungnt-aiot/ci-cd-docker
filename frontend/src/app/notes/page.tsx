@@ -13,6 +13,8 @@ interface NoteItemInterface {
 export default function NotesPage() {
     const [notes, setNotes] = useState<NoteItemInterface[]>([]);
 
+    console.log(`${process.env.NEXT_PUBLIC_API_URL}/api/note`)
+
     async function fetchNotes() {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/note`, { cache: 'no-store' });
         const data = await res.json();
