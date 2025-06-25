@@ -17,8 +17,8 @@ export class counterRepositories {
 
     static async getVisiter() {
         return await this.withConnection(async (conn) => {
-            const [result] = await conn.query('SELECT visiter FROM counter');
-            const visiter: RedisTypes.redisValue = (result as any)[0]?.visiter ?? null;
+            const [rows] = await conn.query('SELECT visiter FROM counter');
+            const visiter: RedisTypes.redisValue = (rows as { visiter: string }[])[0]?.visiter ?? null;
 
             return visiter ?? (await this.initDefaultValue());
         });
