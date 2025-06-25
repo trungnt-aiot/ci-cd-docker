@@ -6,11 +6,7 @@ type NavbarItemProps = {
     isActive: boolean;
 };
 
-export default function NavbarItem({
-    text,
-    href = '/',
-    isActive,
-}: NavbarItemProps) {
+export default function NavbarItem({ text, href = '/', isActive }: NavbarItemProps) {
     return (
         <Link href={href}>
             <li className="relative group cursor-pointer px-4 py-2 text-black">

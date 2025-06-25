@@ -4,9 +4,7 @@ import { useEffect } from 'react';
 
 export default function ClientVisitorCounter() {
     useEffect(() => {
-        const navEntries = performance.getEntriesByType(
-            'navigation'
-        ) as PerformanceNavigationTiming[];
+        const navEntries = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[];
         const navType = navEntries[0]?.type;
 
         if (navType === 'reload' || navType === 'navigate') {

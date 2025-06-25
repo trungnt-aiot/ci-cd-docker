@@ -5,8 +5,7 @@ export class redisServices {
     static defaultCounterValue: string = '0';
 
     static async initRedis() {
-        const visitorCounter: string | null =
-            await redisRepositories.get('visitorCounter');
+        const visitorCounter: string | null = await redisRepositories.get('visitorCounter');
         if (!visitorCounter) {
             const counterDB = String(await counterService.getVisiter());
 

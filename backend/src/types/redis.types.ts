@@ -5,5 +5,5 @@ export namespace RedisTypes {
     };
 
     export type redisKey = redisSchema['key'];
-    export type redisValue = Exclude<redisSchema['value'], null>;;
+    export type redisValue = Exclude<redisSchema['value'], null>;
 }

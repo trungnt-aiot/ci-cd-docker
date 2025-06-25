@@ -30,18 +30,9 @@ export default function NotesPage() {
     return (
         <div className="flex justify-around flex-wrap gap-8 mt-4">
             {notes.length > 0 ? (
-                notes.map((item, index) => (
-                    <NoteItem
-                        id={item.id}
-                        key={index}
-                        title={item.title}
-                        content={item.content}
-                    />
-                ))
+                notes.map((item, index) => <NoteItem id={item.id} key={index} title={item.title} content={item.content} />)
             ) : (
-                <p className="text-gray-600 text-lg">
-                    There is no note, please create new one
-                </p>
+                <p className="text-gray-600 text-lg">There is no note, please create new one</p>
             )}
 
             <CreateNoteBtn onNoteCreated={fetchNotes} />

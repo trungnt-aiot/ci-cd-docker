@@ -6,9 +6,7 @@ export class counterRepositories {
     static db: Pool = db;
     static defaultValue: number = 0;
 
-    static async withConnection<T>(
-        callback: (conn: PoolConnection) => Promise<T>
-    ) {
+    static async withConnection<T>(callback: (conn: PoolConnection) => Promise<T>) {
         const conn = await this.db.getConnection();
         try {
             return await callback(conn);
@@ -28,10 +26,7 @@ export class counterRepositories {
 
     static async setVisiter(newValue: number) {
         return await this.withConnection(async (conn) => {
-            const [result] = await conn.query(
-                'UPDATE counter SET visiter = ?',
-                [newValue]
-            );
+            const [result] = await conn.query('UPDATE counter SET visiter = ?', [newValue]);
 
             return result;
         });
@@ -39,9 +34,7 @@ export class counterRepositories {
 
     static async initDefaultValue() {
         return await this.withConnection(async (conn) => {
-            await conn.query('INSERT INTO counter (visiter) VALUES (?)', [
-                this.defaultValue,
-            ]);
+            await conn.query('INSERT INTO counter (visiter) VALUES (?)', [this.defaultValue]);
 
             return this.defaultValue;
         });

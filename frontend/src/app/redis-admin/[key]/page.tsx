@@ -6,18 +6,14 @@ import { useEffect, useState } from 'react';
 export default function RedisDetailPage() {
     const { key } = useParams() as { key: string };
     const [value, setValue] = useState<string>('');
-    const [originalValueType, setOriginalValueType] = useState<
-        'string' | 'object' | null
-    >(null);
+    const [originalValueType, setOriginalValueType] = useState<'string' | 'object' | null>(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
 
     useEffect(() => {
         const fetchKeyValue = async () => {
             try {
-                const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_API_URL}/api/redis/${encodeURIComponent(key)}`
-                );
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/redis/${encodeURIComponent(key)}`);
                 if (!res.ok) {
                     throw new Error(`Error fetching data: ${res.statusText}`);
                 }
@@ -48,23 +44,17 @@ export default function RedisDetailPage() {
             try {
                 valueToSave = JSON.parse(value);
             } catch (e) {
-                console.log(
-                    'Invalid JSON format. Please correct it before saving as an object.',
-                    e
-                );
+                console.log('Invalid JSON format. Please correct it before saving as an object.', e);
                 return;
             }
         }
 
         try {
-            const res = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/redis/${encodeURIComponent(key)}`,
-                {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ value: valueToSave }),
-                }
-            );
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/redis/${encodeURIComponent(key)}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ value: valueToSave }),
+            });
 
             if (!res.ok) {
                 throw new Error(`Error saving data: ${res.statusText}`);
@@ -77,20 +67,13 @@ export default function RedisDetailPage() {
     };
 
     const handleDelete = async () => {
-        if (
-            !confirm(
-                'Are you sure you want to delete this key? This action cannot be undone.'
-            )
-        ) {
+        if (!confirm('Are you sure you want to delete this key? This action cannot be undone.')) {
             return;
         }
         try {
-            const res = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/redis/${encodeURIComponent(key)}`,
-                {
-                    method: 'DELETE',
-                }
-            );
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/redis/${encodeURIComponent(key)}`, {
+                method: 'DELETE',
+            });
 
             if (!res.ok) {
                 throw new Error(`Error deleting data: ${res.statusText}`);
@@ -113,19 +96,11 @@ export default function RedisDetailPage() {
                 <label htmlFor="redis-key" className="block font-semibold mb-1">
                     Key:
                 </label>
-                <input
-                    id="redis-key"
-                    value={key}
-                    disabled
-                    className="w-full border px-3 py-2 rounded bg-gray-100 text-gray-500"
-                />
+                <input id="redis-key" value={key} disabled className="w-full border px-3 py-2 rounded bg-gray-100 text-gray-500" />
             </div>
 
             <div className="mb-4">
-                <label
-                    htmlFor="redis-value"
-                    className="block font-semibold mb-1"
-                >
+                <label htmlFor="redis-value" className="block font-semibold mb-1">
                     Value:
                 </label>
                 <textarea
@@ -137,8 +112,7 @@ export default function RedisDetailPage() {
                 />
                 {originalValueType === 'object' && (
                     <p className="text-sm text-gray-500 mt-1">
-                        This value was originally stored as a JSON object.
-                        Please maintain valid JSON format if you edit it.
+                        This value was originally stored as a JSON object. Please maintain valid JSON format if you edit it.
                     </p>
                 )}
             </div>
