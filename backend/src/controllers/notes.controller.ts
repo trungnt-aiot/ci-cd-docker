@@ -1,49 +1,51 @@
-import { Request, Response } from "express";
-import { noteService } from "../services/note.services";
+import { Request, Response } from 'express'
+import { noteService } from '../services/note.services'
+import { QueryResult } from 'mysql2'
+import { NotesTypes } from '../types/notes.types'
 
 export class notesController {
     static async getAll(req: Request, res: Response) {
-        const notes = await noteService.getAllService()
+        const notes: QueryResult = await noteService.getAllService()
 
         res.status(200).send({
-            notes
+            notes,
         })
     }
 
     static async getOne(req: Request, res: Response) {
-        const id: string = req.params.id;
-        const note = await noteService.getOne(id)
+        const id: NotesTypes.NoteID = req.params.id;
+        const note: QueryResult = await noteService.getOne(id)
 
         res.status(200).send({
-            note
+            note,
         })
     }
 
     static async create(req: Request, res: Response) {
-        const {title, content} = req.body
-        const newNote = await noteService.create(title, content)
+        const { title, content }: NotesTypes.CreatedNote = req.body
+        const newNote: QueryResult = await noteService.create(title, content)
 
         res.status(200).send({
-            newNote
+            newNote,
         })
     }
 
     static async delete(req: Request, res: Response) {
-        const id: string = req.params.id
-        const note = await noteService.delete(id)
+        const id: NotesTypes.NoteID = req.params.id;
+        const note: QueryResult = await noteService.delete(id)
 
         res.status(200).send({
-            note
+            note,
         })
     }
 
     static async update(req: Request, res: Response) {
-        const {title, content} = req.body
-        const id: string = req.params.id
-        const note = await noteService.update(id, title, content)
+        const { title, content }: NotesTypes.CreatedNote = req.body
+        const id: NotesTypes.NoteID = req.params.id;
+        const note: QueryResult = await noteService.update(id, title, content)
 
         res.status(200).send({
-            note
+            note,
         })
     }
 }
