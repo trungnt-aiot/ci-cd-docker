@@ -13,10 +13,12 @@ interface NoteItemInterface {
 export default function NotesPage() {
     const [notes, setNotes] = useState<NoteItemInterface[]>([]);
 
-    console.log(`${process.env.NEXT_PUBLIC_API_URL}/api/note`)
+    console.log(`${process.env.NEXT_PUBLIC_API_URL}/api/note`);
 
     async function fetchNotes() {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/note`, { cache: 'no-store' });
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/note`, {
+            cache: 'no-store',
+        });
         const data = await res.json();
         setNotes(data.notes || []);
     }
@@ -29,10 +31,17 @@ export default function NotesPage() {
         <div className="flex justify-around flex-wrap gap-8 mt-4">
             {notes.length > 0 ? (
                 notes.map((item, index) => (
-                    <NoteItem id={item.id} key={index} title={item.title} content={item.content} />
+                    <NoteItem
+                        id={item.id}
+                        key={index}
+                        title={item.title}
+                        content={item.content}
+                    />
                 ))
             ) : (
-                <p className="text-gray-600 text-lg">There is no note, please create new one</p>
+                <p className="text-gray-600 text-lg">
+                    There is no note, please create new one
+                </p>
             )}
 
             <CreateNoteBtn onNoteCreated={fetchNotes} />

@@ -7,17 +7,19 @@ interface CreateKeyValueRedisBtnProps {
     onKeyValueCreated: () => void;
 }
 
-export default function CreateKeyValueRedisBtn({ onKeyValueCreated }: CreateKeyValueRedisBtnProps) {
+export default function CreateKeyValueRedisBtn({
+    onKeyValueCreated,
+}: CreateKeyValueRedisBtnProps) {
     const [isOpen, setIsOpen] = useState(false);
     const keyRef = useRef<HTMLInputElement>(null);
     const valueRef = useRef<HTMLInputElement>(null);
 
     async function CreateNewKeyValue() {
-        const key = keyRef.current?.value || "";
-        const value = valueRef.current?.value || "";
+        const key = keyRef.current?.value || '';
+        const value = valueRef.current?.value || '';
 
         await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/redis`, {
-            method: "POST",
+            method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ key, value }),
         });
@@ -47,18 +49,28 @@ export default function CreateKeyValueRedisBtn({ onKeyValueCreated }: CreateKeyV
                             >
                                 <X size={20} />
                             </button>
-                            <h2 className="text-xl font-bold mb-4">Create New Note</h2>
+                            <h2 className="text-xl font-bold mb-4">
+                                Create New Note
+                            </h2>
                             <form className="space-y-4">
                                 <div>
                                     <label className="block text-sm">Key</label>
-                                    <input ref={keyRef} className="w-full border border-indigo-900/50 rounded p-2" />
+                                    <input
+                                        ref={keyRef}
+                                        className="w-full border border-indigo-900/50 rounded p-2"
+                                    />
                                 </div>
                                 <div>
-                                    <label className="block text-sm">Value</label>
-                                    <input ref={valueRef} className="w-full border border-indigo-900/50 rounded p-2" />
+                                    <label className="block text-sm">
+                                        Value
+                                    </label>
+                                    <input
+                                        ref={valueRef}
+                                        className="w-full border border-indigo-900/50 rounded p-2"
+                                    />
                                 </div>
                                 <button
-                                    type='button'
+                                    type="button"
                                     onClick={CreateNewKeyValue}
                                     className="w-full bg-blue-500 text-white py-2 rounded cursor-pointer"
                                 >

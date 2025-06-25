@@ -13,11 +13,11 @@ export default function CreateNoteBtn({ onNoteCreated }: CreateNoteBtnProps) {
     const contentRef = useRef<HTMLTextAreaElement>(null);
 
     async function CreateNewNote() {
-        const title = titleRef.current?.value || "";
-        const content = contentRef.current?.value || "";
+        const title = titleRef.current?.value || '';
+        const content = contentRef.current?.value || '';
 
         await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/note`, {
-            method: "POST",
+            method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ title, content }),
         });
@@ -47,18 +47,31 @@ export default function CreateNoteBtn({ onNoteCreated }: CreateNoteBtnProps) {
                             >
                                 <X size={20} />
                             </button>
-                            <h2 className="text-xl font-bold mb-4">Create New Note</h2>
+                            <h2 className="text-xl font-bold mb-4">
+                                Create New Note
+                            </h2>
                             <form className="space-y-4">
                                 <div>
-                                    <label className="block text-sm">Title</label>
-                                    <input ref={titleRef} className="w-full border border-indigo-900/50 rounded p-2" />
+                                    <label className="block text-sm">
+                                        Title
+                                    </label>
+                                    <input
+                                        ref={titleRef}
+                                        className="w-full border border-indigo-900/50 rounded p-2"
+                                    />
                                 </div>
                                 <div>
-                                    <label className="block text-sm">Message</label>
-                                    <textarea ref={contentRef} rows={4} className="w-full border border-indigo-900/50 rounded p-2" />
+                                    <label className="block text-sm">
+                                        Message
+                                    </label>
+                                    <textarea
+                                        ref={contentRef}
+                                        rows={4}
+                                        className="w-full border border-indigo-900/50 rounded p-2"
+                                    />
                                 </div>
                                 <button
-                                    type='button'
+                                    type="button"
                                     onClick={CreateNewNote}
                                     className="w-full bg-blue-500 text-white py-2 rounded cursor-pointer"
                                 >

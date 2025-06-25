@@ -8,17 +8,16 @@ export const db = mysql.createPool({
     port: Number(process.env.SQL_PORT),
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    queueLimit: 0,
 });
-
 
 export async function connectMysql() {
     db.getConnection()
         .then((connection) => {
-            console.log("Connect to mysql successfully!")
-            connection.release()
+            console.log('Connect to mysql successfully!');
+            connection.release();
         })
         .catch((err) => {
-            console.log("Connect to mysql failure! err: ", err)
-        })
+            console.log('Connect to mysql failure! err: ', err);
+        });
 }
