@@ -3,9 +3,9 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import CreateKeyValueRedisBtn from '@/components/ui/CreateKeyValueRedisBtn';
-
 interface RedisItem {
-    [key: string]: string | null;
+    key: string;
+    value: string;
 }
 
 export default function RedisAdminPage() {
@@ -39,35 +39,19 @@ export default function RedisAdminPage() {
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((item, index) => {
-                        const key = Object.keys(item)[0];
-                        const value = item[key];
-                        return (
-                            <tr
-                                key={key || `item-${index}`}
-                                className="hover:bg-gray-50"
-                            >
-                                <td className="border px-4 py-2 text-blue-600">
-                                    <Link
-                                        href={`/redis-admin/${encodeURIComponent(key)}`}
-                                    >
-                                        {key}
-                                    </Link>
-                                </td>
-                                <td className="border px-4 py-2">
-                                    {typeof value === 'object' && value !== null
-                                        ? JSON.stringify(value, null, 2)
-                                        : String(value)}
-                                </td>
-                            </tr>
-                        );
-                    })}
+                    {data.map((item, index) => (
+                        <tr key={item.key || `item-${index}`} className="hover:bg-gray-50">
+                            <td className="border px-4 py-2 text-blue-600">
+                                <Link href={`/redis-admin/${encodeURIComponent(item.key)}`}>{item.key}</Link>
+                            </td>
+                            <td className="border px-4 py-2">
+                                {typeof item.value === 'object' && item.value !== null ? JSON.stringify(item.value, null, 2) : String(item.value)}
+                            </td>
+                        </tr>
+                    ))}
                     {data.length === 0 && (
                         <tr>
-                            <td
-                                colSpan={2}
-                                className="text-center py-4 text-gray-500"
-                            >
+                            <td colSpan={2} className="text-center py-4 text-gray-500">
                                 No data found.
                             </td>
                         </tr>
