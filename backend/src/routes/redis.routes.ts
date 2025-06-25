@@ -1,7 +1,7 @@
 import { redisController } from './../controllers/redis.controller';
-import express from 'express';
+import express, { Router } from 'express';
 
-const router = express.Router();
+const router: Router = express.Router();
 
 router.get('/', redisController.getAll);
 router.post('/', redisController.create);

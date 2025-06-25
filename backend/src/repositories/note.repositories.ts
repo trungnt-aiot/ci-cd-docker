@@ -1,50 +1,65 @@
-import { mySQLDB } from '../config/mysql';
-import type { PoolConnection, Pool } from 'mysql2/promise';
+import { BaseRepository } from './base.repository';
+import type { PoolConnection, QueryResult } from 'mysql2/promise';
+import { NotesTypes } from '../types/notes.types';
 
-export class NoteRepository {
-    static mySQLDB: Pool = mySQLDB;
-
-    static async withConnection<T>(callback: (conn: PoolConnection) => Promise<T>) {
-        const conn = await this.mySQLDB.getConnection();
+export class NoteRepository extends BaseRepository {
+    static async createNote(title: NotesTypes.NoteTitle, content: NotesTypes.NoteContent): Promise<QueryResult> {
         try {
-            return await callback(conn);
-        } finally {
-            conn.release();
+            return await this.withConnection(async (conn: PoolConnection) => {
+                const [result] = await conn.query('INSERT INTO notes (title, content) VALUES (?, ?)', [title, content]);
+                return result;
+            });
+        } catch (error) {
+            console.error('Error creating note:', error);
+            throw error;
         }
     }
 
-    static async createNote(title: string, content: string) {
-        return await this.withConnection(async (conn) => {
-            const [result] = await conn.query('INSERT INTO notes (title, content) VALUES (?, ?)', [title, content]);
-            return result;
-        });
+    static async updateNote(id: NotesTypes.NoteID, title: NotesTypes.NoteTitle, content: NotesTypes.NoteContent): Promise<QueryResult> {
+        try {
+            return await this.withConnection(async (conn: PoolConnection) => {
+                const [result] = await conn.query(`UPDATE notes SET title = ?, content = ? WHERE id = ?`, [title, content, id]);
+                return result;
+            });
+        } catch (error) {
+            console.error('Error updating note:', error);
+            throw error;
+        }
     }
 
-    static async updateNote(id: string, title: string, content: string) {
-        return await this.withConnection(async (conn) => {
-            const [result] = await conn.query(`UPDATE notes SET title = ?, content = ? WHERE id = ?`, [title, content, id]);
-            return result;
-        });
+    static async getNoteById(id: NotesTypes.NoteID): Promise<QueryResult | null> {
+        try {
+            return await this.withConnection(async (conn: PoolConnection) => {
+                const [result] = await conn.query('SELECT * FROM notes WHERE id = ?', [id]);
+                return result;
+            });
+        } catch (error) {
+            console.error('Error fetching note by id:', error);
+            throw error;
+        }
     }
 
-    static async getNoteById(id: string) {
-        return await this.withConnection(async (conn) => {
-            const [result] = await conn.query('SELECT * FROM notes WHERE id = ?', [id]);
-            return result;
-        });
+    static async getNotesList(): Promise<QueryResult> {
+        try {
+            return await this.withConnection(async (conn: PoolConnection) => {
+                const [results] = await conn.query('SELECT * FROM notes');
+                return results;
+            });
+        } catch (error) {
+            console.error('Error fetching notes list:', error);
+            throw error;
+        }
     }
 
-    static async getNotesList() {
-        return await this.withConnection(async (conn) => {
-            const [results] = await conn.query('SELECT * FROM notes');
-            return results;
-        });
-    }
-
-    static async deleteNote(id: string) {
-        return await this.withConnection(async (conn) => {
-            const [results] = await conn.query('DELETE note where id = ?', [id]);
-            return results;
-        });
+    static async deleteNote(id: string): Promise<QueryResult> {
+        try {
+            return await this.withConnection(async (conn: PoolConnection) => {
+                const [results] = await conn.query('DELETE FROM notes WHERE id = ?', [id]);
+                return results;
+            });
+        } catch (error) {
+            console.error('Error deleting note:', error);
+            throw error;
+        }
     }
 }

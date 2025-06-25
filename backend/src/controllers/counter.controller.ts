@@ -1,38 +1,47 @@
-import { Request, Response } from 'express';
-import { redisRepositories } from '../repositories/redis.repositories';
+import { NextFunction, Request, Response } from 'express';
 import { redisServices } from '../services/redis.services';
 import { RedisTypes } from '../types/redis.types';
+import { COUNTER_ERROR_MESSAGE, RESPONSE_STATUS_CODE } from '../utils/enum.utils';
 
 export class counterController {
-    static async get(req: Request, res: Response) {
-        const visitorCounter: RedisTypes.redisKey = await redisServices.getCounter();
+    static async get(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const visitorCounter: RedisTypes.redisValue = await redisServices.getCounter();
 
-        console.log('GET /api/counter: ', visitorCounter);
-
-        res.status(200).send({
-            visitorCounter,
-        });
+            res.status(RESPONSE_STATUS_CODE.OK).json({
+                visitorCounter,
+            });
+        } catch (error) {
+            console.error(`${COUNTER_ERROR_MESSAGE.GET_COUNTER_ERROR}: ${error}`);
+            next(error);
+        }
     }
 
-    static async increment(req: Request, res: Response) {
-        const visitorCounter: RedisTypes.redisValue = await redisServices.incrementCounter();
+    static async increment(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const visitorCounter: RedisTypes.redisValue = await redisServices.incrementCounter();
 
-        console.log('PATCH /api/counter: ', visitorCounter);
-
-        res.status(200).send({
-            visitorCounter,
-        });
+            res.status(RESPONSE_STATUS_CODE.OK).json({
+                visitorCounter,
+            });
+        } catch (error) {
+            console.error(`${COUNTER_ERROR_MESSAGE.INCREMENT_COUNTER_ERROR}: ${error}`);
+            next(error);
+        }
     }
 
-    static async setCounter(req: Request, res: Response) {
-        const newValue: RedisTypes.redisValue = req.body.newValue;
+    static async setCounter(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const newValue: RedisTypes.redisValue = req.body.newValue;
 
-        console.log(newValue);
+            await redisServices.setValue(await redisServices.getVisitorCounter(), newValue);
 
-        await redisRepositories.set('visitorCounter', newValue);
-
-        res.status(200).send({
-            newValue,
-        });
+            res.status(RESPONSE_STATUS_CODE.OK).json({
+                newValue,
+            });
+        } catch (error) {
+            console.error(`${COUNTER_ERROR_MESSAGE.SET_COUNTER_ERROR}: ${error}`);
+            next(error);
+        }
     }
 }

@@ -1,7 +1,7 @@
-import { createClient } from 'redis';
+import { createClient, RedisClientType } from 'redis';
 import { redisServices } from '../services/redis.services';
 
-export const redisClient = createClient({
+export const redisClient: RedisClientType = createClient({
     url: `redis://redis:${process.env.REDIS_PORT}`,
 });
 
