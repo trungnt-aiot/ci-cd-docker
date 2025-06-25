@@ -44,7 +44,7 @@ export default [
                 performance: 'readonly',
                 PerformanceNavigationTiming: 'readonly',
                 React: 'readonly', // Add React to globals
-                JSX: 'readonly',  // Add JSX namespace for TypeScript
+                JSX: 'readonly', // Add JSX namespace for TypeScript
             },
         },
         plugins: {
@@ -61,14 +61,17 @@ export default [
             ...js.configs.recommended.rules,
             ...typescript.configs.recommended.rules,
             ...prettierConfig.rules,
-            'prettier/prettier': ['error', {
-                semi: true,
-                tabWidth: 4,
-                singleQuote: true,
-                trailingComma: 'es5',
-                printWidth: 150,
-                useTabs: false,
-            }],
+            'prettier/prettier': [
+                'error',
+                {
+                    semi: true,
+                    tabWidth: 4,
+                    singleQuote: true,
+                    trailingComma: 'es5',
+                    printWidth: 150,
+                    useTabs: false,
+                },
+            ],
             '@typescript-eslint/no-unused-vars': 'error',
             '@typescript-eslint/explicit-function-return-type': 'off',
             '@typescript-eslint/no-explicit-any': 'warn',
