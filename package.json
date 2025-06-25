@@ -4,21 +4,29 @@
         "lint:fix": "eslint . --fix",
         "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
         "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
-        "reformat": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" && eslint . --fix"
+        "reformat": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" && eslint . --fix",
+        "lint-staged": "lint-staged",
+        "prepare": "husky"
     },
     "workspaces": [
         "frontend",
         "backend"
     ],
     "devDependencies": {
+        "@commitlint/cli": "^19.8.1",
+        "@commitlint/config-conventional": "^19.8.1",
         "@eslint/js": "^9.29.0",
         "@next/eslint-plugin-next": "^15.3.4",
         "@typescript-eslint/eslint-plugin": "^8.35.0",
         "@typescript-eslint/parser": "^8.35.0",
+        "commitizen": "^4.3.1",
+        "cz-conventional-changelog": "^3.3.0",
         "eslint": "^9.29.0",
         "eslint-config-prettier": "^10.1.5",
         "eslint-plugin-prettier": "^5.5.0",
         "eslint-plugin-react": "^7.37.5",
+        "husky": "^9.1.7",
+        "lint-staged": "^16.1.2",
         "prettier": "^3.6.0",
         "typescript": "^5.8.3",
         "typescript-eslint": "^8.35.0"
@@ -234,5 +242,16 @@
         "url": "https://github.com/trungnt-aiot/ci-cd-docker/issues"
     },
     "homepage": "https://github.com/trungnt-aiot/ci-cd-docker#readme",
-    "description": ""
+    "description": "",
+    "lint-staged": {
+        "*.{js,jsx,ts,tsx}": [
+            "eslint --fix",
+            "git add ."
+        ]
+    },
+    "config": {
+        "commitizen": {
+            "path": "./node_modules/cz-conventional-changelog"
+        }
+    }
 }

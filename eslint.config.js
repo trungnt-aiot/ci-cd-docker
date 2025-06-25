@@ -1,22 +1,13 @@
-import js from '@eslint/js'
-import typescript from '@typescript-eslint/eslint-plugin'
-import typescriptParser from '@typescript-eslint/parser'
-import prettier from 'eslint-plugin-prettier'
-import prettierConfig from 'eslint-config-prettier'
+import js from '@eslint/js';
+import typescript from '@typescript-eslint/eslint-plugin';
+import typescriptParser from '@typescript-eslint/parser';
+import prettier from 'eslint-plugin-prettier';
+import prettierConfig from 'eslint-config-prettier';
 
 export default [
     // Ignore patterns
     {
-        ignores: [
-            'node_modules/**',
-            'dist/**',
-            'build/**',
-            '.next/**',
-            'coverage/**',
-            '*.config.js',
-            '*.config.mjs',
-            '*.config.ts',
-        ],
+        ignores: ['node_modules/**', 'dist/**', 'build/**', '.next/**', 'coverage/**', '*.config.js', '*.config.mjs', '*.config.ts'],
     },
 
     // Base config for all files
@@ -29,6 +20,7 @@ export default [
                 sourceType: 'module',
             },
             globals: {
+                // common node globals
                 console: 'readonly',
                 process: 'readonly',
                 Buffer: 'readonly',
@@ -38,16 +30,35 @@ export default [
                 require: 'readonly',
                 exports: 'readonly',
                 global: 'readonly',
+
+                // DOM globals manually added 👇
+                window: 'readonly',
+                document: 'readonly',
+                navigator: 'readonly',
+                HTMLInputElement: 'readonly',
+                HTMLTextAreaElement: 'readonly',
+                HTMLElement: 'readonly',
+                localStorage: 'readonly',
+                sessionStorage: 'readonly',
+                fetch: 'readonly',
+
+                alert: 'readonly',
+                confirm: 'readonly',
+                performance: 'readonly',
+                PerformanceNavigationTiming: 'readonly',
             },
         },
         plugins: {
             '@typescript-eslint': typescript,
-            prettier: prettier,
+            prettier,
         },
         rules: {
             ...js.configs.recommended.rules,
-            ...typescript.configs.recommended,
+            ...typescript.configs.recommended.rules,
             ...prettierConfig.rules,
+
+            '@typescript-eslint/no-namespace': 'off',
+
             'prettier/prettier': [
                 'error',
                 {
@@ -63,30 +74,19 @@ export default [
             '@typescript-eslint/explicit-function-return-type': 'off',
             '@typescript-eslint/no-explicit-any': 'warn',
             indent: ['error', 4, { SwitchCase: 1 }],
-            '@typescript-eslint/indent': 'off', // Tắt để tránh conflict với prettier
+            '@typescript-eslint/indent': 'off',
         },
     },
 
-    // Frontend specific config
+    // Frontend specific (optional)
     {
         files: ['frontend/**/*.{ts,tsx,js,jsx}'],
-        languageOptions: {
-            globals: {
-                window: 'readonly',
-                document: 'readonly',
-                navigator: 'readonly',
-                localStorage: 'readonly',
-                sessionStorage: 'readonly',
-                fetch: 'readonly',
-            },
-        },
         rules: {
-            // Frontend specific rules
-            'react/react-in-jsx-scope': 'off', // Not needed in Next.js 13+
+            'react/react-in-jsx-scope': 'off',
         },
     },
 
-    // Backend specific config
+    // Backend specific
     {
         files: ['backend/**/*.{ts,js}'],
         languageOptions: {
@@ -98,8 +98,7 @@ export default [
             },
         },
         rules: {
-            // Backend specific rules
-            'no-console': 'off', // Allow console in backend
+            'no-console': 'off',
         },
     },
 ];
