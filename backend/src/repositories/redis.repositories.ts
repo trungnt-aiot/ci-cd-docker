@@ -34,6 +34,7 @@ export class redisRepositories {
                     const parsedValue: RedisTypes.redisValue = JSON.parse(value);
                     result.push({ key, value: parsedValue });
                 } catch (e) {
+                    console.log(e);
                     console.warn(`Warning: Could not parse JSON for key "${key}". Value: "${value}"`);
                     result.push({ key, value });
                 }

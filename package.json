@@ -1,4 +1,5 @@
 {
+    "type": "module",
     "scripts": {
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
@@ -27,7 +28,7 @@
         "eslint-plugin-react": "^7.37.5",
         "husky": "^9.1.7",
         "lint-staged": "^16.1.2",
-        "prettier": "^3.6.0",
+        "prettier": "^3.6.1",
         "typescript": "^5.8.3",
         "typescript-eslint": "^8.35.0"
     },
@@ -245,7 +246,7 @@
     "description": "",
     "lint-staged": {
         "*.{js,jsx,ts,tsx}": [
-            "eslint --fix",
+            "npm run lint",
             "git add ."
         ]
     },
