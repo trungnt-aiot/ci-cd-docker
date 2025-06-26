@@ -1,4 +1,4 @@
-import { mySQLDB } from '../config/mysql';
+import { db } from '../config/mysql';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -11,7 +11,7 @@ export async function migrateDB() {
         for (const file of sqlFiles) {
             const filePath = path.join(__dirname, 'sql', file);
             const sql = await fs.readFile(filePath, 'utf-8');
-            const connection = await mySQLDB.getConnection();
+            const connection = await db.getConnection();
             await connection.query(sql);
             connection.release();
         }
