@@ -1,11 +1,11 @@
-import { db } from '../config/mysql';
+import { mySQLDB } from '../config/mysql';
 import type { PoolConnection, Pool } from 'mysql2/promise';
 
 export class NoteRepository {
-    static db: Pool = db;
+    static mySQLDB: Pool = mySQLDB;
 
     static async withConnection<T>(callback: (conn: PoolConnection) => Promise<T>) {
-        const conn = await this.db.getConnection();
+        const conn = await this.mySQLDB.getConnection();
         try {
             return await callback(conn);
         } finally {
