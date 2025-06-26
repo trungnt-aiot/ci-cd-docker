@@ -12,7 +12,7 @@ export async function connectRedis() {
             console.log('Connected to Redis!');
             await redisServices.initRedis();
         } catch (error) {
-            console.error('Could not connect to Redis:', error);
+            console.error('Could not connect to Redis: ', error);
         }
     }
 }
