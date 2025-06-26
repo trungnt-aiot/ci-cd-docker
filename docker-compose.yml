@@ -17,6 +17,8 @@ services:
     container_name: my-redis-cache
 
   backend:
+    # build:
+    #   context: ./backend
     image: trungaiot/backend-express-aiot:latest
     container_name: backend-express
     ports:
@@ -36,6 +38,8 @@ services:
       - redis
 
   frontend:
+    # build:
+      # context: ./frontend
     image: trungaiot/frontend-nextjs-aiot:latest
     container_name: frontend-nextjs
     ports:
