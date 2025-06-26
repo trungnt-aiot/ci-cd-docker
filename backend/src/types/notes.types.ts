@@ -7,9 +7,9 @@ export namespace NotesTypes {
     };
 
     export type NoteID = string;
-    export type NoteTitle = Pick<NotesSchema, 'title'>;
-    export type NoteContent = Pick<NotesSchema, 'content'>;
-    export type NoteCreateAt = Pick<NotesSchema, 'created_at'>;
+    export type NoteTitle = NotesSchema['title'];
+    export type NoteContent = NotesSchema['content'];
+    export type NoteCreateAt = NotesSchema['created_at'];
 
     export type CreatedNote = Omit<NotesSchema, 'id' | 'created_at'>;
 }
