@@ -18,6 +18,6 @@ export async function connectMysql() {
             connection.release();
         })
         .catch((err) => {
-            console.log('Connect to mysql failure! err: ', err);
+            console.error('Connect to mysql failure! err: ', err);
         });
 }
