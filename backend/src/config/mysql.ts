@@ -1,6 +1,6 @@
 import mysql from 'mysql2/promise';
 
-export const db = mysql.createPool({
+export const mySQLDB: mysql.Pool = mysql.createPool({
     host: process.env.SQL_HOST,
     user: process.env.SQL_USER,
     password: process.env.SQL_PASSWORD,
@@ -11,13 +11,14 @@ export const db = mysql.createPool({
     queueLimit: 0,
 });
 
-export async function connectMysql() {
-    db.getConnection()
+export async function connectMysql(): Promise<void> {
+    mySQLDB
+        .getConnection()
         .then((connection) => {
             console.log('Connect to mysql successfully!');
             connection.release();
         })
         .catch((err) => {
-            console.log('Connect to mysql failure! err: ', err);
+            console.error('Connect to mysql failure! err: ', err);
         });
 }
