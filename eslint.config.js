@@ -43,8 +43,10 @@ export default [
                 confirm: 'readonly',
                 performance: 'readonly',
                 PerformanceNavigationTiming: 'readonly',
-                React: 'readonly', // Add React to globals
-                JSX: 'readonly', // Add JSX namespace for TypeScript
+                React: 'readonly',
+                JSX: 'readonly',
+                setTimeout: 'readonly',
+                clearTimeout: 'readonly',
             },
         },
         plugins: {
@@ -54,7 +56,7 @@ export default [
         },
         settings: {
             react: {
-                version: 'detect', // Add React version detection
+                version: 'detect',
             },
         },
         rules: {
@@ -78,12 +80,12 @@ export default [
             '@typescript-eslint/no-namespace': 'off',
             '@typescript-eslint/indent': 'off',
             indent: ['error', 4, { SwitchCase: 1 }],
-            'react/react-in-jsx-scope': 'off', // This is correct for Next.js 13+
-            'react/prop-types': 'off', // Turn off prop-types if using TypeScript
+            'react/react-in-jsx-scope': 'off',
+            'react/prop-types': 'off',
         },
     },
     {
-        files: ['frontend/**/*.{ts,tsx}'], // Specific rules for frontend React files
+        files: ['frontend/**/*.{ts,tsx}'],
         languageOptions: {
             globals: {
                 React: 'readonly',

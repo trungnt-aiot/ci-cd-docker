@@ -18,7 +18,7 @@ services:
 
   backend:
     # build:
-    #   context: ./backend
+      # context: ./backend
     image: trungaiot/backend-express-aiot:latest
     container_name: backend-express
     ports:
