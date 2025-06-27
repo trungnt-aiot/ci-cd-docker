@@ -1,13 +1,13 @@
-import { counterRepositories } from './../repositories/counter.repositories';
+import { CounterRepositories } from './../repositories/counter.repositories';
 import { RedisTypes } from '../types/redis.types';
 import { QueryResult } from 'mysql2/promise';
 import { APIError } from '../utils/error.handler.utils';
 import { COUNTER_ERROR_MESSAGE, RESPONSE_STATUS_CODE } from '../utils/enum.utils';
 
-export class counterService {
+export class CounterService {
     static async getVisiter(): Promise<RedisTypes.redisValue> {
         try {
-            return await counterRepositories.getVisiter();
+            return await CounterRepositories.getVisiter();
         } catch (error) {
             console.error(`${COUNTER_ERROR_MESSAGE.GET_COUNTER_ERROR}: ${error}`);
             throw error;
@@ -26,7 +26,7 @@ export class counterService {
         }
 
         try {
-            return await counterRepositories.setVisiter(newValue);
+            return await CounterRepositories.setVisiter(newValue);
         } catch (error) {
             console.error(`${COUNTER_ERROR_MESSAGE.SET_COUNTER_ERROR}: ${error}`);
             throw error;

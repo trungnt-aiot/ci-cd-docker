@@ -1,7 +1,7 @@
 import { redisClient } from '../config/redis';
 import { RedisTypes } from '../types/redis.types';
 
-export class redisRepositories {
+export class RedisRepositories {
     static readonly visitorCounterKey: RedisTypes.redisKey = 'visitorCounter';
 
     static async get(key: RedisTypes.redisKey): Promise<RedisTypes.redisValue | null> {

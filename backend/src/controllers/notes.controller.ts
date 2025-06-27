@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
-import { noteService } from '../services/note.services';
+import { NoteService } from '../services/note.services';
 import { QueryResult } from 'mysql2';
 import { NotesTypes } from '../types/notes.types';
 import { NOTES_ERROR_MESSAGE, RESPONSE_STATUS_CODE } from '../utils/enum.utils';
 
-export class notesController {
+export class NotesController {
     static async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const notes: QueryResult = await noteService.getAllNotes();
+            const notes: QueryResult = await NoteService.getAllNotes();
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 notes,
@@ -22,7 +22,7 @@ export class notesController {
         const id: NotesTypes.NoteID = req.params.id;
 
         try {
-            const note: QueryResult | null = await noteService.getOne(id);
+            const note: QueryResult | null = await NoteService.getOne(id);
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 note,
@@ -37,7 +37,7 @@ export class notesController {
         const { title, content }: NotesTypes.CreatedNote = req.body;
 
         try {
-            const newNote: QueryResult = await noteService.createNote(title, content);
+            const newNote: QueryResult = await NoteService.createNote(title, content);
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 newNote,
@@ -52,7 +52,7 @@ export class notesController {
         const id: NotesTypes.NoteID = req.params.id;
 
         try {
-            const note: QueryResult = await noteService.deleteNote(id);
+            const note: QueryResult = await NoteService.deleteNote(id);
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 note,
@@ -68,7 +68,7 @@ export class notesController {
         const id: NotesTypes.NoteID = req.params.id;
 
         try {
-            const note: QueryResult = await noteService.updateNote(id, title, content);
+            const note: QueryResult = await NoteService.updateNote(id, title, content);
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 note,

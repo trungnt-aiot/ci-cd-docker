@@ -1,19 +1,19 @@
-import { redisRepositories } from '../repositories/redis.repositories';
-import { counterService } from './counter.services';
+import { RedisRepositories } from '../repositories/redis.repositories';
+import { CounterService } from './counter.services';
 import { RedisTypes } from '../types/redis.types';
 import { APIError } from '../utils/error.handler.utils';
 import { REDIS_ERROR_MESSAGE, RESPONSE_STATUS_CODE } from '../utils/enum.utils';
 
-export class redisServices {
+export class RedisServices {
     static readonly defaultCounterValue: string = '0';
 
     static async initRedis(): Promise<RedisTypes.redisValue> {
         try {
-            const visitorCounter: string | null = await redisRepositories.get(redisRepositories.visitorCounterKey);
+            const visitorCounter: string | null = await RedisRepositories.get(RedisRepositories.visitorCounterKey);
             if (!visitorCounter) {
-                const counterDB: RedisTypes.redisValue = String(await counterService.getVisiter());
+                const counterDB: RedisTypes.redisValue = String(await CounterService.getVisiter());
+                await RedisRepositories.set(RedisRepositories.visitorCounterKey, counterDB);
 
-                await redisRepositories.set(redisRepositories.visitorCounterKey, counterDB);
                 return counterDB;
             }
 
@@ -26,7 +26,7 @@ export class redisServices {
 
     static async getCounter(): Promise<RedisTypes.redisValue> {
         try {
-            const visitorCounter: string | null = await redisRepositories.get(redisRepositories.visitorCounterKey);
+            const visitorCounter: string | null = await RedisRepositories.get(RedisRepositories.visitorCounterKey);
             if (!visitorCounter) return await this.initRedis();
             return visitorCounter;
         } catch (error) {
@@ -44,8 +44,9 @@ export class redisServices {
 
         try {
             const newValue: RedisTypes.redisValue = String(Number(await this.getCounter()) + stepIncrement);
-            await counterService.setVisiter(Number(newValue));
-            await redisRepositories.set(redisRepositories.visitorCounterKey, newValue);
+            await CounterService.setVisiter(Number(newValue));
+            await RedisRepositories.set(RedisRepositories.visitorCounterKey, newValue);
+
             return newValue;
         } catch (error) {
             console.error(`${REDIS_ERROR_MESSAGE.INCREMENT_COUNTER_ERROR}: ${error}`);
@@ -55,7 +56,7 @@ export class redisServices {
 
     static async items(): Promise<RedisTypes.redisSchema[]> {
         try {
-            return await redisRepositories.items();
+            return await RedisRepositories.items();
         } catch (error) {
             console.error(`${REDIS_ERROR_MESSAGE.GET_ALL_ERROR}: ${error}`);
             throw error;
@@ -68,7 +69,7 @@ export class redisServices {
         }
 
         try {
-            return await redisRepositories.get(key);
+            return await RedisRepositories.get(key);
         } catch (error) {
             console.error(`${REDIS_ERROR_MESSAGE.GET_ONE_ERROR}: ${error}`);
             throw error;
@@ -80,9 +81,9 @@ export class redisServices {
             throw new APIError(REDIS_ERROR_MESSAGE.KEY_VALUE_REQUIRED_ERROR, RESPONSE_STATUS_CODE.BAD_REQUEST);
         }
 
-        if (key === redisRepositories.visitorCounterKey) {
+        if (key === RedisRepositories.visitorCounterKey) {
             try {
-                await counterService.setVisiter(Number(value));
+                await CounterService.setVisiter(Number(value));
             } catch (error) {
                 console.error(`${REDIS_ERROR_MESSAGE.SET_VISITER_ERROR}: ${error}`);
                 throw error;
@@ -90,7 +91,7 @@ export class redisServices {
         }
 
         try {
-            return await redisRepositories.set(key, value);
+            return await RedisRepositories.set(key, value);
         } catch (error) {
             console.error(`${REDIS_ERROR_MESSAGE.SET_VALUE_ERROR}: ${error}`);
             throw error;
@@ -108,7 +109,7 @@ export class redisServices {
         }
 
         try {
-            return await redisRepositories.delete(key);
+            return await RedisRepositories.delete(key);
         } catch (error) {
             console.error(`${REDIS_ERROR_MESSAGE.DELETE_ERROR}: ${error}`);
             throw error;
@@ -117,7 +118,7 @@ export class redisServices {
 
     static async getVisitorCounter(): Promise<RedisTypes.redisValue> {
         try {
-            const visitorCounter: string | null = await redisRepositories.get(redisRepositories.visitorCounterKey);
+            const visitorCounter: string | null = await RedisRepositories.get(RedisRepositories.visitorCounterKey);
             if (!visitorCounter) return await this.initRedis();
             return visitorCounter;
         } catch (error) {
@@ -137,7 +138,7 @@ export class redisServices {
         }
 
         try {
-            return await redisRepositories.set(key, value);
+            return await RedisRepositories.set(key, value);
         } catch (error) {
             console.error(`${REDIS_ERROR_MESSAGE.CREATE_ERROR}: ${error}`);
             throw error;

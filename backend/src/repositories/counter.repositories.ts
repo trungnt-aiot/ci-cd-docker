@@ -2,7 +2,7 @@ import { RedisTypes } from '../types/redis.types';
 import { BaseRepository } from './base.repository';
 import type { PoolConnection, QueryResult } from 'mysql2/promise';
 
-export class counterRepositories extends BaseRepository {
+export class CounterRepositories extends BaseRepository {
     static async getVisiter(): Promise<RedisTypes.redisValue> {
         try {
             return await this.withConnection(async (conn: PoolConnection) => {

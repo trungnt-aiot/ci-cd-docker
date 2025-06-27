@@ -1,10 +1,10 @@
 import express, { Router } from 'express';
-import { counterController } from '../controllers/counter.controller';
+import { CounterController } from '../controllers/counter.controller';
 
 const router: Router = express.Router();
 
-router.get('/', counterController.get);
-router.patch('/', counterController.increment);
-router.patch('/set', counterController.setCounter);
+router.get('/', CounterController.get);
+router.patch('/', CounterController.increment);
+router.patch('/set', CounterController.setCounter);
 
 export { router };

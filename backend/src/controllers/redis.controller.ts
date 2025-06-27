@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
-import { redisServices } from '../services/redis.services';
+import { RedisServices } from '../services/redis.services';
 import { RedisTypes } from '../types/redis.types';
 import { REDIS_ERROR_MESSAGE, RESPONSE_STATUS_CODE } from '../utils/enum.utils';
 
-export class redisController {
+export class RedisController {
     static async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const items: RedisTypes.redisSchema[] = await redisServices.items();
+            const items: RedisTypes.redisSchema[] = await RedisServices.items();
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 items,
@@ -21,7 +21,7 @@ export class redisController {
         const key: RedisTypes.redisKey = req.params.key;
 
         try {
-            const value: RedisTypes.redisValue | null = await redisServices.getByKey(key);
+            const value: RedisTypes.redisValue | null = await RedisServices.getByKey(key);
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 key,
@@ -38,7 +38,7 @@ export class redisController {
         const newValue: RedisTypes.redisValue = req.body.value;
 
         try {
-            const result: RedisTypes.redisValue | null = await redisServices.setValue(key, newValue);
+            const result: RedisTypes.redisValue | null = await RedisServices.setValue(key, newValue);
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 result,
@@ -53,7 +53,7 @@ export class redisController {
         const key: RedisTypes.redisKey = req.params.key;
 
         try {
-            const result: number = await redisServices.deleteKey(key);
+            const result: number = await RedisServices.deleteKey(key);
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 result,
@@ -68,7 +68,7 @@ export class redisController {
         const { key, value }: RedisTypes.redisSchema = req.body;
 
         try {
-            const result: RedisTypes.redisValue | null = await redisServices.createItem(key, value);
+            const result: RedisTypes.redisValue | null = await RedisServices.createItem(key, value);
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 result,

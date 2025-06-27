@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
-import { redisServices } from '../services/redis.services';
+import { RedisServices } from '../services/redis.services';
 import { RedisTypes } from '../types/redis.types';
 import { COUNTER_ERROR_MESSAGE, RESPONSE_STATUS_CODE } from '../utils/enum.utils';
 
-export class counterController {
+export class CounterController {
     static async get(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const visitorCounter: RedisTypes.redisValue = await redisServices.getCounter();
+            const visitorCounter: RedisTypes.redisValue = await RedisServices.getCounter();
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 visitorCounter,
@@ -19,7 +19,7 @@ export class counterController {
 
     static async increment(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const visitorCounter: RedisTypes.redisValue = await redisServices.incrementCounter();
+            const visitorCounter: RedisTypes.redisValue = await RedisServices.incrementCounter();
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 visitorCounter,
@@ -34,7 +34,7 @@ export class counterController {
         try {
             const newValue: RedisTypes.redisValue = req.body.newValue;
 
-            await redisServices.setValue(await redisServices.getVisitorCounter(), newValue);
+            await RedisServices.setValue(await RedisServices.getVisitorCounter(), newValue);
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 newValue,

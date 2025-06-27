@@ -1,12 +1,12 @@
-import { redisController } from './../controllers/redis.controller';
+import { RedisController } from './../controllers/redis.controller';
 import express, { Router } from 'express';
 
 const router: Router = express.Router();
 
-router.get('/', redisController.getAll);
-router.post('/', redisController.create);
-router.get('/:key', redisController.getOne);
-router.patch('/:key', redisController.update);
-router.delete('/:key', redisController.delete);
+router.get('/', RedisController.getAll);
+router.post('/', RedisController.create);
+router.get('/:key', RedisController.getOne);
+router.patch('/:key', RedisController.update);
+router.delete('/:key', RedisController.delete);
 
 export { router };

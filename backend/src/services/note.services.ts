@@ -4,7 +4,7 @@ import { NotesTypes } from '../types/notes.types';
 import { APIError } from '../utils/error.handler.utils';
 import { NOTES_ERROR_MESSAGE, RESPONSE_STATUS_CODE } from '../utils/enum.utils';
 
-export class noteService {
+export class NoteService {
     static async getAllNotes(): Promise<QueryResult> {
         try {
             return await NoteRepository.getNotesList();

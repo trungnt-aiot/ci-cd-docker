@@ -1,5 +1,5 @@
 import { createClient } from 'redis';
-import { redisServices } from '../services/redis.services';
+import { RedisServices } from '../services/redis.services';
 
 export const redisClient = createClient({
     url: `redis://redis:${process.env.REDIS_PORT}`,
@@ -10,7 +10,7 @@ export async function connectRedis(): Promise<void> {
         try {
             await redisClient.connect();
             console.log('Connected to Redis!');
-            await redisServices.initRedis();
+            await RedisServices.initRedis();
         } catch (error) {
             console.error('Could not connect to Redis: ', error);
         }
