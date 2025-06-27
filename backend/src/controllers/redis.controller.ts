@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
-import { RedisServices } from '../services/redis.services';
+import { redisServices } from '../services/redis.services';
 import { RedisTypes } from '../types/redis.types';
 import { REDIS_ERROR_MESSAGE, RESPONSE_STATUS_CODE } from '../utils/enum.utils';
 
-export class RedisController {
-    static async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
+class RedisController {
+    async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const items: RedisTypes.redisSchema[] = await RedisServices.items();
+            const items: RedisTypes.redisSchema[] = await redisServices.items();
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 items,
@@ -17,11 +17,11 @@ export class RedisController {
         }
     }
 
-    static async getOne(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async getOne(req: Request, res: Response, next: NextFunction): Promise<void> {
         const key: RedisTypes.redisKey = req.params.key;
 
         try {
-            const value: RedisTypes.redisValue | null = await RedisServices.getByKey(key);
+            const value: RedisTypes.redisValue | null = await redisServices.getByKey(key);
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 key,
@@ -33,12 +33,12 @@ export class RedisController {
         }
     }
 
-    static async update(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async update(req: Request, res: Response, next: NextFunction): Promise<void> {
         const key: RedisTypes.redisKey = req.params.key;
         const newValue: RedisTypes.redisValue = req.body.value;
 
         try {
-            const result: RedisTypes.redisValue | null = await RedisServices.setValue(key, newValue);
+            const result: RedisTypes.redisValue | null = await redisServices.setValue(key, newValue);
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 result,
@@ -49,11 +49,11 @@ export class RedisController {
         }
     }
 
-    static async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
         const key: RedisTypes.redisKey = req.params.key;
 
         try {
-            const result: number = await RedisServices.deleteKey(key);
+            const result: number = await redisServices.deleteKey(key);
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 result,
@@ -64,11 +64,11 @@ export class RedisController {
         }
     }
 
-    static async create(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async create(req: Request, res: Response, next: NextFunction): Promise<void> {
         const { key, value }: RedisTypes.redisSchema = req.body;
 
         try {
-            const result: RedisTypes.redisValue | null = await RedisServices.createItem(key, value);
+            const result: RedisTypes.redisValue | null = await redisServices.createItem(key, value);
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 result,
@@ -79,3 +79,5 @@ export class RedisController {
         }
     }
 }
+
+export const redisController = new RedisController();

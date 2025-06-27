@@ -1,10 +1,10 @@
 import { redisClient } from '../config/redis';
 import { RedisTypes } from '../types/redis.types';
 
-export class RedisRepositories {
-    static readonly visitorCounterKey: RedisTypes.redisKey = 'visitorCounter';
+class RedisRepositories {
+    readonly visitorCounterKey: RedisTypes.redisKey = 'visitorCounter';
 
-    static async get(key: RedisTypes.redisKey): Promise<RedisTypes.redisValue | null> {
+    async get(key: RedisTypes.redisKey): Promise<RedisTypes.redisValue | null> {
         try {
             return await redisClient.get(key);
         } catch (error) {
@@ -13,7 +13,7 @@ export class RedisRepositories {
         }
     }
 
-    static async set(key: RedisTypes.redisKey, value: RedisTypes.redisValue): Promise<RedisTypes.redisValue | null> {
+    async set(key: RedisTypes.redisKey, value: RedisTypes.redisValue): Promise<RedisTypes.redisValue | null> {
         try {
             return await redisClient.set(key, value);
         } catch (error) {
@@ -22,7 +22,7 @@ export class RedisRepositories {
         }
     }
 
-    static async items(): Promise<RedisTypes.redisSchema[]> {
+    async items(): Promise<RedisTypes.redisSchema[]> {
         try {
             const allKeys: string[] = [];
             let cursor: string = '0';
@@ -63,7 +63,7 @@ export class RedisRepositories {
         }
     }
 
-    static async delete(key: RedisTypes.redisKey): Promise<number> {
+    async delete(key: RedisTypes.redisKey): Promise<number> {
         try {
             return await redisClient.del(key);
         } catch (error) {
@@ -72,3 +72,5 @@ export class RedisRepositories {
         }
     }
 }
+
+export const redisRepositories = new RedisRepositories();

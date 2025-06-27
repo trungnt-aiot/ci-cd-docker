@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
-import { NoteService } from '../services/note.services';
+import { noteServices } from '../services/note.services';
 import { QueryResult } from 'mysql2';
 import { NotesTypes } from '../types/notes.types';
 import { NOTES_ERROR_MESSAGE, RESPONSE_STATUS_CODE } from '../utils/enum.utils';
 
-export class NotesController {
-    static async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
+class NotesController {
+    async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const notes: QueryResult = await NoteService.getAllNotes();
+            const notes: QueryResult = await noteServices.getAllNotes();
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 notes,
@@ -18,11 +18,11 @@ export class NotesController {
         }
     }
 
-    static async getOne(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async getOne(req: Request, res: Response, next: NextFunction): Promise<void> {
         const id: NotesTypes.NoteID = req.params.id;
 
         try {
-            const note: QueryResult | null = await NoteService.getOne(id);
+            const note: QueryResult | null = await noteServices.getOne(id);
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 note,
@@ -33,11 +33,11 @@ export class NotesController {
         }
     }
 
-    static async create(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async create(req: Request, res: Response, next: NextFunction): Promise<void> {
         const { title, content }: NotesTypes.CreatedNote = req.body;
 
         try {
-            const newNote: QueryResult = await NoteService.createNote(title, content);
+            const newNote: QueryResult = await noteServices.createNote(title, content);
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 newNote,
@@ -48,11 +48,11 @@ export class NotesController {
         }
     }
 
-    static async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
         const id: NotesTypes.NoteID = req.params.id;
 
         try {
-            const note: QueryResult = await NoteService.deleteNote(id);
+            const note: QueryResult = await noteServices.deleteNote(id);
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 note,
@@ -63,12 +63,12 @@ export class NotesController {
         }
     }
 
-    static async update(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async update(req: Request, res: Response, next: NextFunction): Promise<void> {
         const { title, content }: NotesTypes.CreatedNote = req.body;
         const id: NotesTypes.NoteID = req.params.id;
 
         try {
-            const note: QueryResult = await NoteService.updateNote(id, title, content);
+            const note: QueryResult = await noteServices.updateNote(id, title, content);
 
             res.status(RESPONSE_STATUS_CODE.OK).json({
                 note,
@@ -79,3 +79,5 @@ export class NotesController {
         }
     }
 }
+
+export const notesController = new NotesController();

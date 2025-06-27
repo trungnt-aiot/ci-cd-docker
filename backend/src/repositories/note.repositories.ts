@@ -2,8 +2,8 @@ import { BaseRepository } from './base.repository';
 import type { PoolConnection, QueryResult } from 'mysql2/promise';
 import { NotesTypes } from '../types/notes.types';
 
-export class NoteRepository extends BaseRepository {
-    static async createNote(title: NotesTypes.NoteTitle, content: NotesTypes.NoteContent): Promise<QueryResult> {
+class NoteRepositories extends BaseRepository {
+    async createNote(title: NotesTypes.NoteTitle, content: NotesTypes.NoteContent): Promise<QueryResult> {
         try {
             return await this.withConnection(async (conn: PoolConnection) => {
                 const [result] = await conn.query('INSERT INTO notes (title, content) VALUES (?, ?)', [title, content]);
@@ -15,7 +15,7 @@ export class NoteRepository extends BaseRepository {
         }
     }
 
-    static async updateNote(id: NotesTypes.NoteID, title: NotesTypes.NoteTitle, content: NotesTypes.NoteContent): Promise<QueryResult> {
+    async updateNote(id: NotesTypes.NoteID, title: NotesTypes.NoteTitle, content: NotesTypes.NoteContent): Promise<QueryResult> {
         try {
             return await this.withConnection(async (conn: PoolConnection) => {
                 const [result] = await conn.query(`UPDATE notes SET title = ?, content = ? WHERE id = ?`, [title, content, id]);
@@ -27,7 +27,7 @@ export class NoteRepository extends BaseRepository {
         }
     }
 
-    static async getNoteById(id: NotesTypes.NoteID): Promise<QueryResult | null> {
+    async getNoteById(id: NotesTypes.NoteID): Promise<QueryResult | null> {
         try {
             return await this.withConnection(async (conn: PoolConnection) => {
                 const [result] = await conn.query('SELECT * FROM notes WHERE id = ?', [id]);
@@ -39,7 +39,7 @@ export class NoteRepository extends BaseRepository {
         }
     }
 
-    static async getNotesList(): Promise<QueryResult> {
+    async getNotesList(): Promise<QueryResult> {
         try {
             return await this.withConnection(async (conn: PoolConnection) => {
                 const [results] = await conn.query('SELECT * FROM notes');
@@ -51,7 +51,7 @@ export class NoteRepository extends BaseRepository {
         }
     }
 
-    static async deleteNote(id: string): Promise<QueryResult> {
+    async deleteNote(id: string): Promise<QueryResult> {
         try {
             return await this.withConnection(async (conn: PoolConnection) => {
                 const [results] = await conn.query('DELETE FROM notes WHERE id = ?', [id]);
@@ -63,3 +63,5 @@ export class NoteRepository extends BaseRepository {
         }
     }
 }
+
+export const noteRepositories = new NoteRepositories();

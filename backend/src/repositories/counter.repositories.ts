@@ -2,8 +2,8 @@ import { RedisTypes } from '../types/redis.types';
 import { BaseRepository } from './base.repository';
 import type { PoolConnection, QueryResult } from 'mysql2/promise';
 
-export class CounterRepositories extends BaseRepository {
-    static async getVisiter(): Promise<RedisTypes.redisValue> {
+class CounterRepositories extends BaseRepository {
+    async getVisiter(): Promise<RedisTypes.redisValue> {
         try {
             return await this.withConnection(async (conn: PoolConnection) => {
                 const [rows] = await conn.query('SELECT visiter FROM counter');
@@ -17,7 +17,7 @@ export class CounterRepositories extends BaseRepository {
         }
     }
 
-    static async setVisiter(newValue: number): Promise<QueryResult> {
+    async setVisiter(newValue: number): Promise<QueryResult> {
         try {
             return await this.withConnection(async (conn: PoolConnection) => {
                 const [result] = await conn.query('UPDATE counter SET visiter = ?', [newValue]);
@@ -30,7 +30,7 @@ export class CounterRepositories extends BaseRepository {
         }
     }
 
-    static async initDefaultValue(): Promise<RedisTypes.redisValue> {
+    async initDefaultValue(): Promise<RedisTypes.redisValue> {
         try {
             return await this.withConnection(async (conn: PoolConnection) => {
                 await conn.query('INSERT INTO counter (visiter) VALUES (?)', [this.defaultValue]);
@@ -43,3 +43,5 @@ export class CounterRepositories extends BaseRepository {
         }
     }
 }
+
+export const counterRepositories = new CounterRepositories();
