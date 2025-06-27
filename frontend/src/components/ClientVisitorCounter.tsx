@@ -4,8 +4,10 @@ import { useEffect } from 'react';
 
 export default function ClientVisitorCounter() {
     useEffect(() => {
+        if (typeof performance === 'undefined') return;
+
         const navEntries = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[];
-        const navType = navEntries[0]?.type;
+        const navType = navEntries?.[0]?.type;
 
         if (navType === 'reload' || navType === 'navigate') {
             fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/counter`, {
@@ -19,8 +21,10 @@ export default function ClientVisitorCounter() {
                     console.log('Visitor API called');
                 })
                 .catch((err) => {
-                    console.error('API call failed:', err);
+                    console.error('Visitor API call failed:', err);
                 });
+        } else {
+            console.log('Navigation type is not reload or navigate:', navType);
         }
     }, []);
 
