@@ -3,15 +3,23 @@ import HomePage from '@/components/HomePage';
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-    console.log(`${process.env.NEXT_PUBLIC_API_URL}/api/counter`);
+    let count: string = '0';
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/counter`, {
-        method: 'PATCH',
-    });
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/counter`, {
+            method: 'PATCH',
+            cache: 'no-store',
+        });
 
-    console.log('HOME');
+        if (!res.ok) {
+            console.error(`Failed to update visitor counter: ${res.status} ${res.statusText}`);
+        } else {
+            const data = await res.json();
+            count = data.visitorCounter || 0;
+        }
+    } catch (err: unknown) {
+        console.error('Error fetching visitor counter:', err);
+    }
 
-    const data = await res.json();
-
-    return <HomePage count={data.visitorCounter} />;
+    return <HomePage count={count} />;
 }

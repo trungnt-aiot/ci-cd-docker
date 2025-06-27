@@ -5,20 +5,24 @@ import { useEffect, useState } from 'react';
 
 export default function RedisDetailPage() {
     const { key } = useParams() as { key: string };
+    const router = useRouter();
+
     const [value, setValue] = useState<string>('');
     const [originalValueType, setOriginalValueType] = useState<'string' | 'object' | null>(null);
     const [loading, setLoading] = useState(true);
-    const router = useRouter();
+    const [error, setError] = useState<string | null>(null);
+    const [jsonError, setJsonError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchKeyValue = async () => {
+            setLoading(true);
+            setError(null);
+
             try {
                 const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/redis/${encodeURIComponent(key)}`);
-                if (!res.ok) {
-                    throw new Error(`Error fetching data: ${res.statusText}`);
-                }
-                const data = await res.json();
+                if (!res.ok) throw new Error(`Failed to fetch key: ${res.statusText}`);
 
+                const data = await res.json();
                 if (data.value !== null && typeof data.value === 'object') {
                     setValue(JSON.stringify(data.value, null, 2));
                     setOriginalValueType('object');
@@ -26,9 +30,14 @@ export default function RedisDetailPage() {
                     setValue(data.value ?? '');
                     setOriginalValueType('string');
                 }
-            } catch (error) {
-                console.error('Failed to fetch Redis key detail:', error);
-                setValue('');
+            } catch (err: unknown) {
+                if (err instanceof Error) {
+                    console.error(err);
+                    setError(err.message);
+                } else {
+                    console.error('Unknown error', err);
+                    setError('An unexpected error occurred.');
+                }
             } finally {
                 setLoading(false);
             }
@@ -38,13 +47,14 @@ export default function RedisDetailPage() {
     }, [key]);
 
     const handleSave = async () => {
-        let valueToSave = value;
+        setJsonError(null);
+        let valueToSave: string | object = value;
 
         if (originalValueType === 'object') {
             try {
                 valueToSave = JSON.parse(value);
-            } catch (e) {
-                console.log('Invalid JSON format. Please correct it before saving as an object.', e);
+            } catch {
+                setJsonError('Invalid JSON format. Please correct it before saving.');
                 return;
             }
         }
@@ -56,83 +66,87 @@ export default function RedisDetailPage() {
                 body: JSON.stringify({ value: valueToSave }),
             });
 
-            if (!res.ok) {
-                throw new Error(`Error saving data: ${res.statusText}`);
+            if (!res.ok) throw new Error(`Failed to update: ${res.statusText}`);
+            alert('Updated successfully.');
+        } catch (err) {
+            if (err instanceof Error) {
+                console.error(err);
+                setError(err.message);
+            } else {
+                console.error('Unknown error', err);
+                setError('An unexpected error occurred.');
             }
-            alert('Updated successfully!');
-        } catch (error) {
-            console.error('Failed to save Redis key:', error);
-            alert('Failed to update. Check console for details.');
         }
     };
 
     const handleDelete = async () => {
-        if (!confirm('Are you sure you want to delete this key? This action cannot be undone.')) {
-            return;
-        }
+        const confirmDelete = confirm('Are you sure you want to delete this key?');
+        if (!confirmDelete) return;
+
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/redis/${encodeURIComponent(key)}`, {
                 method: 'DELETE',
             });
 
-            if (!res.ok) {
-                throw new Error(`Error deleting data: ${res.statusText}`);
-            }
-            alert('Key deleted!');
+            if (!res.ok) throw new Error(`Failed to delete: ${res.statusText}`);
+            alert('Key deleted successfully.');
             router.push('/redis-admin');
-        } catch (error) {
-            console.error('Failed to delete Redis key:', error);
-            alert('Failed to delete. Check console for details.');
+        } catch (err) {
+            if (err instanceof Error) {
+                console.error(err);
+                setError(err.message);
+            }
         }
     };
 
-    if (loading) return <p className="p-6">Loading...</p>;
+    if (loading) {
+        return <p className="p-6 text-gray-500">Loading...</p>;
+    }
 
     return (
-        <div className="p-6 max-w-xl mx-auto">
-            <h1 className="text-xl font-bold mb-4">Edit Redis Key</h1>
+        <div className="p-6 max-w-2xl mx-auto bg-white rounded-xl shadow mt-8">
+            <h1 className="text-2xl font-semibold text-gray-800 mb-6">Edit Redis Key</h1>
+
+            {error && <p className="text-red-600 font-medium mb-4">{error}</p>}
 
             <div className="mb-4">
-                <label htmlFor="redis-key" className="block font-semibold mb-1">
-                    Key:
+                <label htmlFor="redis-key" className="block text-sm font-medium text-gray-700 mb-1">
+                    Key
                 </label>
-                <input id="redis-key" value={key} disabled className="w-full border px-3 py-2 rounded bg-gray-100 text-gray-500" />
+                <input id="redis-key" value={key} disabled className="w-full border px-3 py-2 rounded bg-gray-100 text-gray-500 cursor-not-allowed" />
             </div>
 
             <div className="mb-4">
-                <label htmlFor="redis-value" className="block font-semibold mb-1">
-                    Value:
+                <label htmlFor="redis-value" className="block text-sm font-medium text-gray-700 mb-1">
+                    Value
                 </label>
                 <textarea
                     id="redis-value"
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
-                    className="w-full border px-3 py-2 rounded h-48 focus:ring-blue-500 focus:border-blue-500"
+                    className={`w-full border px-3 py-2 rounded h-52 focus:ring-2 ${
+                        jsonError ? 'border-red-400 focus:ring-red-400' : 'focus:ring-blue-500'
+                    }`}
                     placeholder="Enter value (JSON format if the original value was an object)"
                 />
                 {originalValueType === 'object' && (
-                    <p className="text-sm text-gray-500 mt-1">
-                        This value was originally stored as a JSON object. Please maintain valid JSON format if you edit it.
-                    </p>
+                    <p className="text-sm text-gray-500 mt-1">This key was originally stored as a JSON object. Please enter valid JSON.</p>
                 )}
+                {jsonError && <p className="text-sm text-red-600 mt-2">{jsonError}</p>}
             </div>
 
-            <div className="flex space-x-2">
-                <button
-                    onClick={handleSave}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow-md transition-colors duration-200"
-                >
+            <div className="flex flex-wrap gap-3 justify-between mt-6">
+                <button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded shadow transition">
                     Save
                 </button>
-                <button
-                    onClick={handleDelete}
-                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded shadow-md transition-colors duration-200"
-                >
+
+                <button onClick={handleDelete} className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded shadow transition">
                     Delete
                 </button>
+
                 <button
                     onClick={() => router.push('/redis-admin')}
-                    className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded shadow-md transition-colors duration-200 ml-auto"
+                    className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-5 py-2 rounded shadow transition"
                 >
                     Back to List
                 </button>

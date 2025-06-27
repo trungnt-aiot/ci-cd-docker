@@ -1,42 +1,47 @@
-import { mySQLDB } from '../config/mysql';
-import type { PoolConnection, Pool } from 'mysql2/promise';
 import { RedisTypes } from '../types/redis.types';
+import { BaseRepository } from './base.repository';
+import type { PoolConnection, QueryResult } from 'mysql2/promise';
 
-export class counterRepositories {
-    static mySQLDB: Pool = mySQLDB;
-    static defaultValue: number = 0;
-
-    static async withConnection<T>(callback: (conn: PoolConnection) => Promise<T>) {
-        const conn = await this.mySQLDB.getConnection();
+class CounterRepositories extends BaseRepository {
+    async getVisiter(): Promise<RedisTypes.redisValue> {
         try {
-            return await callback(conn);
-        } finally {
-            conn.release();
+            return await this.withConnection(async (conn: PoolConnection) => {
+                const [rows] = await conn.query('SELECT visiter FROM counter');
+                const visiter: RedisTypes.redisValue = (rows as { visiter: string }[])[0]?.visiter ?? null;
+
+                return visiter ?? (await this.initDefaultValue());
+            });
+        } catch (error) {
+            console.error('Error fetching visitor count:', error);
+            throw error;
         }
     }
 
-    static async getVisiter() {
-        return await this.withConnection(async (conn) => {
-            const [rows] = await conn.query('SELECT visiter FROM counter');
-            const visiter: RedisTypes.redisValue = (rows as { visiter: string }[])[0]?.visiter ?? null;
+    async setVisiter(newValue: number): Promise<QueryResult> {
+        try {
+            return await this.withConnection(async (conn: PoolConnection) => {
+                const [result] = await conn.query('UPDATE counter SET visiter = ?', [newValue]);
 
-            return visiter ?? (await this.initDefaultValue());
-        });
+                return result;
+            });
+        } catch (error) {
+            console.error('Error updating visitor count:', error);
+            throw error;
+        }
     }
 
-    static async setVisiter(newValue: number) {
-        return await this.withConnection(async (conn) => {
-            const [result] = await conn.query('UPDATE counter SET visiter = ?', [newValue]);
+    async initDefaultValue(): Promise<RedisTypes.redisValue> {
+        try {
+            return await this.withConnection(async (conn: PoolConnection) => {
+                await conn.query('INSERT INTO counter (visiter) VALUES (?)', [this.defaultValue]);
 
-            return result;
-        });
-    }
-
-    static async initDefaultValue() {
-        return await this.withConnection(async (conn) => {
-            await conn.query('INSERT INTO counter (visiter) VALUES (?)', [this.defaultValue]);
-
-            return this.defaultValue;
-        });
+                return String(this.defaultValue);
+            });
+        } catch (error) {
+            console.error('Error initializing default visitor count:', error);
+            throw error;
+        }
     }
 }
+
+export const counterRepositories = new CounterRepositories();
